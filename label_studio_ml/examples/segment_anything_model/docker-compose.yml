@@ -6,6 +6,7 @@ services:
     image: heartexlabs/label-studio-ml-backend:sam-master
     networks:
       - label-studio
+    restart: unless-stopped
     build:
       context: .
       shm_size: '4gb'
@@ -42,9 +43,8 @@ services:
       # Do not use 'localhost' as it does not work within Docker containers.
       # Use prefix 'http://' or 'https://' for the URL always.
       # Determine the actual IP using 'ifconfig' (Linux/Mac) or 'ipconfig' (Windows).
-      - LABEL_STUDIO_HOST=
-      - LABEL_STUDIO_ACCESS_TOKEN=
-    restart: unless-stopped
+      - LABEL_STUDIO_HOST=http://{IP_ADDRESS}:8080
+      - LABEL_STUDIO_ACCESS_TOKEN={ACCESS_TOKEN}
 
     ports:
       - 9090:9090
