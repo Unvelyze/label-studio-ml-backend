@@ -4,6 +4,8 @@ services:
   segment_anything_model:
     container_name: segment_anything_model
     image: heartexlabs/label-studio-ml-backend:sam-master
+    networks:
+      - label-studio
     build:
       context: .
       shm_size: '4gb'
@@ -12,14 +14,14 @@ services:
     deploy:
       resources:
         limits:
-            memory: 8G
+          memory: 8G
         reservations:
-            memory: 4G
-# Add this to pass through 1 GPU 
-#            devices:
-#              - driver: nvidia
-#                count: 1
-#                capabilities: [gpu]
+          memory: 4G
+          # Add this to pass through 1 GPU
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     environment:
       # specify these parameters if you want to use basic auth for the model server
       - BASIC_AUTH_USER=
@@ -42,8 +44,13 @@ services:
       # Determine the actual IP using 'ifconfig' (Linux/Mac) or 'ipconfig' (Windows).
       - LABEL_STUDIO_HOST=
       - LABEL_STUDIO_ACCESS_TOKEN=
+    restart: unless-stopped
 
     ports:
       - 9090:9090
     volumes:
       - "./data/server:/data"
+
+networks:
+  label-studio:
+    external: true
